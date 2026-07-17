@@ -1,0 +1,42 @@
+local SimpleSound = {}
+local Sounds = {}
+
+function SimpleSound.Play(name, url, parent)
+	local fileName = name .. ".mp3"
+
+	if not isfile(fileName) then
+		writefile(fileName, game:HttpGet(url))
+	end
+
+	if Sounds[name] then
+		Sounds[name]:Stop()
+	end
+
+	local Sound = Instance.new("Sound")
+	Sound.SoundId = getcustomasset(fileName)
+	Sound.Volume = 1
+	Sound.Parent = parent or game.Players.LocalPlayer.Character.HumanoidRootPart
+	Sound:Play()
+
+	Sounds[name] = Sound
+end
+
+function SimpleSound.Stop(name)
+	if Sounds[name] then
+		Sounds[name]:Stop()
+	end
+end
+
+function SimpleSound.StopAll()
+	for K, V in Sounds do
+		V:Stop()
+	end
+end
+
+function SimpleSound.SetVolume(name, volume)
+	if Sounds[name] then
+		Sounds[name].Volume = volume
+	end
+end
+
+_G.SimpleSound = SimpleSound
