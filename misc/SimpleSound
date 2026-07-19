@@ -1,7 +1,17 @@
 local SimpleSound = {}
 local Sounds = {}
 
+local function safeName(name)
+	assert(type(name) == "string" and #name > 0, "SimpleSound: name must be a non-empty string")
+	assert(not name:find("[/\\]"), "SimpleSound: name must not contain path separators")
+	assert(not name:find("%.%."), "SimpleSound: name must not contain '..'")
+	return name
+end
+
 function SimpleSound.Load(name, url)
+	name = safeName(name)
+	assert(type(url) == "string" and url:match("^https://"), "SimpleSound: url must be an https:// string")
+
 	local soundtrack = name .. ".mp3"
 
 	if not isfile(soundtrack) then
@@ -10,6 +20,8 @@ function SimpleSound.Load(name, url)
 end
 
 function SimpleSound.Play(name, looped)
+	name = safeName(name)
+
 	if Sounds[name] then
 		Sounds[name]:Stop()
 	end
